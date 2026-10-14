@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Array-Based Inventory & Cart System</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; background: #f4f7f6; color: #333; }
+        h1, h2 { color: #2c3e50; }
+        .card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        input, button { padding: 10px; margin: 5px 0; font-size: 14px; }
+        button { background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #2980b9; }
+        ul { list-style: none; padding: 0; }
+        li { background: #ecf0f1; margin: 5px 0; padding: 10px; display: flex; justify-content: space-between; align-items: center; border-radius: 4px; }
+        .delete-btn { background: #e74c3c; padding: 5px 10px; }
+        .delete-btn:hover { background: #c0392b; }
+    </style>
+</head>
+<body>
+
+    <h1>📦 Array-Powered Inventory System</h1>
+    <p>This application demonstrates real-world data management using JavaScript <strong>Arrays</strong> to store, filter, and manipulate inventory and shopping cart items.</p>
+
+    <!-- Add Item Section -->
+    <div class="card">
+        <h2>Add New Product to Inventory</h2>
+        <input type="text" id="productName" placeholder="Product Name">
+        <input type="number" id="productPrice" placeholder="Price ($)">
+        <button onclick="addProduct()">Add to Inventory</button>
+    </div>
+
+    <!-- Inventory Display -->
+    <div class="card">
+        <h2>Product Catalog (Array Data)</h2>
+        <ul id="inventoryList"></ul>
+    </div>
+
+    <!-- Cart Summary -->
+    <div class="card">
+        <h2>Shopping Cart Summary</h2>
+        <ul id="cartList"></ul>
+        <h3>Total Cart Value: $<span id="cartTotal">0.00</span></h3>
+    </div>
+
+    <script>
+        // MAIN DATA STRUCTURE: JavaScript Arrays
+        let inventory = [
+            { id: 1, name: "Wireless Mouse", price: 25.99 },
+            { id: 2, name: "Mechanical Keyboard", price: 79.99 },
+            { id: 3, name: "USB-C Hub", price: 19.99 }
+        ];
+
+        let cart = [];
+
+        function renderApp() {
+            // Render Inventory Array
+            const invList = document.getElementById('inventoryList');
+            invList.innerHTML = '';
+            inventory.forEach((item, index) => {
+                invList.innerHTML += `
+                    <li>
+                        <span><strong>${item.name}</strong> - $${item.price.toFixed(2)}</span>
+                        <div>
+                            <button onclick="addToCart(${index})">Add to Cart</button>
+                            <button class="delete-btn" onclick="deleteItem(${index})">Delete</button>
+                        </div>
+                    </li>`;
+            });
+
+            // Render Cart Array
+            const cartList = document.getElementById('cartList');
+            cartList.innerHTML = '';
+            cart.forEach((item, index) => {
+                cartList.innerHTML += `
+                    <li>
+                        <span>${item.name} - $${item.price.toFixed(2)}</span>
+                        <button class="delete-btn" onclick="removeFromCart(${index})">Remove</button>
+                    </li>`;
+            });
+
+            // Calculate Total using Array reduce() method
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            document.getElementById('cartTotal').innerText = total.toFixed(2);
+        }
+
+        function addProduct() {
+            const name = document.getElementById('productName').value;
+            const price = parseFloat(document.getElementById('productPrice').value);
+            if (name && !isNaN(price)) {
+                // Array operation: push()
+                inventory.push({ id: inventory.length + 1, name, price });
+                document.getElementById('productName').value = '';
+                document.getElementById('productPrice').value = '';
+                renderApp();
+            } else {
+                alert("Please enter valid product details.");
+            }
+        }
+
+        function deleteItem(index) {
+            // Array operation: splice()
+            inventory.splice(index, 1);
+            renderApp();
+        }
+
+        function addToCart(index) {
+            // Array operation: push()
+            cart.push(inventory[index]);
+            renderApp();
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            renderApp();
+        }
+
+        // Initial render on page load
+        renderApp();
+    </script>
+</body>
+</html>
